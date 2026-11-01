@@ -80,8 +80,29 @@ curl http://127.0.0.1:8000/v1/transactions/txn_abc123def456
 
 Right away, `status` is `PROCESSING`. After about 30 seconds, the same request shows `PROCESSED`.
 
+## Live deployment
+
+- Repository: https://github.com/aakanksha98/transaction-webhook-service
+- Production API: https://transaction-webhook-service-sigma.vercel.app
+
+Example checks against production:
+
+```bash
+curl https://transaction-webhook-service-sigma.vercel.app/
+```
+
+```bash
+curl -i -X POST https://transaction-webhook-service-sigma.vercel.app/v1/webhooks/transactions \
+  -H "Content-Type: application/json" \
+  -d "{\"transaction_id\":\"txn_abc123def456\",\"source_account\":\"acc_user_789\",\"destination_account\":\"acc_merchant_456\",\"amount\":1500,\"currency\":\"INR\"}"
+```
+
+```bash
+curl https://transaction-webhook-service-sigma.vercel.app/v1/transactions/txn_abc123def456
+```
+
 ## Deploy
 
-Connect this repository to a Vercel project. Set `DATABASE_URL` in the Vercel project environment, using the provider's pooled connection string with `sslmode=require`. Do not commit that value.
+The app is deployed on Vercel. Set `DATABASE_URL` in the Vercel project environment (pooled Postgres URL with `sslmode=require`). Do not commit that value.
 
 The function entry is `main.py`. Vercel detects FastAPI from `requirements.txt`.
